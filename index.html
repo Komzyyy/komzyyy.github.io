@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магічна куля</title>
+</head>
+<style>
+    body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #2a3a7c, #3a4a8c);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.container {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    padding: 0 15px;
+}
+
+h1 {
+    font-size: clamp(1.8em, 5vw, 2.5em);
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,.3);
+    color: #e0f7fa;
+}
+
+.magic-ball {
+    width: min(300px, 80vw);
+    height: min(300px, 80vw);
+    background: radial-gradient(circle at 30% 30%, #4fc3f7, #0288d1), radial-gradient(circle at 70% 70%, #29b6f6, #01579b);
+    border-radius: 50%;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0,0,0,.5), inset 0 0 60px rgba(255,255,255,.2), 0 0 40px rgba(33,150,243,.4);
+    border: 4px solid #81d4fa;
+    overflow: hidden;
+}
+
+.magic-ball::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    height: 45%;
+    background: radial-gradient(circle, rgba(255,255,255,.8), transparent 70%);
+    border-radius: 50%;
+    top: 12%;
+    left: 12%;
+    filter: blur(8px);
+    opacity: .6;
+}
+
+.magic-ball::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 20%, transparent 30%, rgba(255,255,255,.1) 100%), radial-gradient(circle at 80% 80%, transparent 30%, rgba(255,255,255,.1) 100%);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+}
+
+.answer-window {
+    width: min(140px, 35vw);
+    height: min(140px, 35vw);
+    background: radial-gradient(circle, rgba(0,0,0,.3), rgba(0,0,0,.5));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e1f5fe;
+    font-size: clamp(11px, 2.8vw, 15px);
+    font-weight: 700;
+    text-align: center;
+    padding: 12px;
+    border: 2px solid #b3e5fc;
+    box-shadow: inset 0 0 25px rgba(179,229,252,.4), 0 0 25px rgba(179,229,252,.3);
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 0 8px rgba(179,229,252,.8);
+    transition: all .3s ease;
+    line-height: 1.3;
+    backdrop-filter: blur(5px);
+}
+
+.answer-window.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-6px) rotate(-1deg); }
+    50% { transform: translateX(6px) rotate(1deg); }
+    75% { transform: translateX(-6px) rotate(-1deg); }
+}
+
+.input-section {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+#questionInput {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    width: min(300px, 100%);
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+    background: rgba(255,255,255,.95);
+    transition: all .3s ease;
+    color: #333;
+}
+
+#questionInput:focus {
+    outline: 0;
+    box-shadow: 0 4px 12px rgba(33,150,243,.3);
+    transform: translateY(-2px);
+}
+
+#questionInput.error {
+    border: 2px solid #f44;
+    animation: pulse .3s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+#askButton {
+    padding: 12px 25px;
+    font-size: 16px;
+    background: linear-gradient(45deg, #0288d1, #0267a1);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all .3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,.2);
+    font-weight: 700;
+}
+
+#askButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,.3);
+    background: linear-gradient(45deg, #039be5, #0277bd);
+}
+
+#askButton:active {
+    transform: translateY(0);
+}
+
+#askButton:disabled {
+    background: #90a4ae;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-top: 5px;
+    text-shadow: 0 0 3px rgba(0,0,0,.5);
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.history {
+    margin-top: 30px;
+    background: rgba(255,255,255,.1);
+    padding: 20px;
+    border-radius: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.2);
+}
+
+.history h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #e1f5fe;
+}
+
+.history-item {
+    background: rgba(255,255,255,.15);
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    text-align: left;
+    border-left: 3px solid #4fc3f7;
+    color: #e1f5fe;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    body { padding: 10px; }
+    .container { padding: 0 10px; }
+    .input-group { flex-direction: column; align-items: center; }
+    #askButton, #questionInput { width: 100%; max-width: 300px; }
+    .history { max-height: 150px; padding: 15px; }
+    .magic-ball { margin-bottom: 20px; }
+}
+
+.magic-ball .glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79,195,247,.3), transparent 70%);
+    animation: glow 4s ease-in-out infinite alternate;
+    z-index: 1;
+}
+
+@keyframes glow {
+    from { opacity: .4; transform: scale(1); }
+    to { opacity: .7; transform: scale(1.05); }
+}
+</style>
+<script>
+    const answers = [
+    "Так, безумовно", "Без сумніву", "Так", "Знаки вказують на так", "Можна розраховувати на це",
+    "Як я бачу, так", "Ймовірніше за все", "Перспективи хороші", "Так", "Все вказує на це",
+    "Відповідь туманна, спробуй ще", "Запитай пізніше", "Краще не розповідати тобі зараз",
+    "Зараз не можна передбачити", "Сконцентруйся і запитай знову", "Не розраховуй на це",
+    "Моя відповідь - ні", "Мої джерела кажуть ні", "Перспективи не дуже хороші", "Дуже сумнівно"
+];
+
+const getRandomAnswer = () => answers[Math.floor(Math.random() * answers.length)];
+
+function createInterface() {
+    document.body.innerHTML = `
+        <div class="container">
+            <h1>Магічна куля</h1>
+            
+            <div class="magic-ball">
+                <div class="glow"></div>
+                <div class="answer-window" id="answerWindow">Задай своє питання...</div>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="questionInput" placeholder="Введіть ваше питання...">
+                    <button id="askButton">Задати питання</button>
+                </div>
+                <div class="error-message" id="errorMessage">Будь ласка, введіть ваше питання!</div>
+            </div>
+            
+            <div class="history">
+                <h3>Історія питань</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+    `;
+    
+    setupEventListeners();
+}
+
+function setupEventListeners() {
+    const questionInput = document.getElementById('questionInput');
+    const askButton = document.getElementById('askButton');
+    const answerWindow = document.getElementById('answerWindow');
+    const errorMessage = document.getElementById('errorMessage');
+
+    const showError = (message) => {
+        errorMessage.textContent = message;
+        errorMessage.classList.add('show');
+        questionInput.classList.add('error');
+        setTimeout(() => {
+            errorMessage.classList.remove('show');
+            questionInput.classList.remove('error');
+        }, 3000);
+    };
+
+    const validateQuestion = (question) => {
+        if (!question.trim()) {
+            showError('Будь ласка, введіть ваше питання!');
+            return false;
+        }
+        if (question.trim().length < 3) {
+            showError('Питання має містити принаймні 3 символи!');
+            return false;
+        }
+        if (question.trim().length > 200) {
+            showError('Питання занадто довге! Максимум 200 символів.');
+            return false;
+        }
+        return true;
+    };
+
+    const askQuestion = () => {
+        const question = questionInput.value.trim();
+        
+        if (!validateQuestion(question)) {
+            return;
+        }
+
+        askButton.disabled = true;
+        questionInput.disabled = true;
+        answerWindow.classList.add('shake');
+        answerWindow.textContent = 'Магічна куля думає...';
+
+        setTimeout(() => {
+            const answer = getRandomAnswer();
+            answerWindow.textContent = answer;
+            answerWindow.classList.remove('shake');
+            addToHistory(question, answer);
+            
+            askButton.disabled = false;
+            questionInput.disabled = false;
+            questionInput.value = '';
+            questionInput.focus();
+        }, 1500);
+    };
+
+    askButton.addEventListener('click', askQuestion);
+    questionInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') {
+            askQuestion();
+        }
+    });
+    questionInput.focus();
+}
+
+function addToHistory(question, answer) {
+    const historyList = document.getElementById('historyList');
+    const historyItem = document.createElement('div');
+    historyItem.className = 'history-item fade-in';
+    historyItem.innerHTML = `<strong>П:</strong> ${question} <br><strong>В:</strong> ${answer}`;
+    
+    historyList.appendChild(historyItem);
+    historyList.scrollTop = historyList.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', createInterface);
+</script>
+<body>
+    
+</body>
+</html>
